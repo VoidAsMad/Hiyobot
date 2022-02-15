@@ -6,13 +6,17 @@ from hiyobot.discord.embeds import Embed
 from hiyobot.handler.app import HiyobotRequest
 
 
-def is_nsfw(f: Any):
-    async def inner(request: HiyobotRequest, *args: Any, **kwargs: Any):
-        assert request.ctx.interaction.channel_id
+async def is_nsfw(request: HiyobotRequest):
+    assert request.ctx.interaction.channel_id
 
-        if not await request.app.ctx.http.channel_is_nsfw(
-            request.ctx.interaction.channel_id
-        ):
+    return await request.app.ctx.http.channel_is_nsfw(
+        request.ctx.interaction.channel_id
+    )
+
+
+def available_only_on_nsfw_channel(f: Any):
+    async def inner(request: HiyobotRequest, *args: Any, **kwargs: Any):
+        if await is_nsfw(request):
             return await request.ctx.response.send(
                 "연령 제한 채널 설정이 되어있지 않습니다. 연령 제한 채널을 설정해주세요.",
                 ephemeral=True,

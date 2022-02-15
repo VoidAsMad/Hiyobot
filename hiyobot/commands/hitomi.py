@@ -2,7 +2,7 @@ from hiyobot.discord.embeds import Embed
 from hiyobot.handler.app import HiyobotRequest
 from hiyobot.handler.register import CommandArgument, RegisterCommand
 from hiyobot.pagenator import Pagenator
-from hiyobot.utils import is_nsfw, make_embed_with_info
+from hiyobot.utils import available_only_on_nsfw_channel, make_embed_with_info
 
 hitomi = RegisterCommand(name="히토미", description="히토미 관련 명령어입니다.")
 
@@ -25,7 +25,7 @@ hitomi = RegisterCommand(name="히토미", description="히토미 관련 명령�
         ),
     ],
 )
-@is_nsfw
+@available_only_on_nsfw_channel
 async def hitomi_info(request: HiyobotRequest, number: int, ephemeral: bool = False):
     info = await request.app.ctx.mintchoco.info(number)
     if info:
@@ -42,9 +42,8 @@ async def hitomi_info(request: HiyobotRequest, number: int, ephemeral: bool = Fa
         CommandArgument(
             name="페이지",
             description="가져올 페이지입니다.",
-            value=1,
             type=4,
-            required=False,
+            required=True,
         ),
         CommandArgument(
             name="나만보기",
@@ -54,7 +53,7 @@ async def hitomi_info(request: HiyobotRequest, number: int, ephemeral: bool = Fa
         ),
     ],
 )
-@is_nsfw
+@available_only_on_nsfw_channel
 async def hitomi_list(request: HiyobotRequest, number: int, ephemeral: bool = False):
     user_id = int(request.json["member"]["user"]["id"])
     infos = await request.app.ctx.mintchoco.list(number)
@@ -88,7 +87,7 @@ async def hitomi_list(request: HiyobotRequest, number: int, ephemeral: bool = Fa
         ),
     ],
 )
-@is_nsfw
+@available_only_on_nsfw_channel
 async def hitomi_viewer(request: HiyobotRequest, number: int, ephemeral: bool = False):
     async def coro():
         images = await request.app.ctx.mintchoco.image(number)
@@ -144,7 +143,7 @@ async def hitomi_viewer(request: HiyobotRequest, number: int, ephemeral: bool = 
         ),
     ],
 )
-@is_nsfw
+@available_only_on_nsfw_channel
 async def hitomi_search(request: HiyobotRequest, query: str, ephemeral: bool = False):
     querys = query.split(" ")
     user_id = int(request.json["member"]["user"]["id"])
