@@ -1,4 +1,4 @@
-from typing import Any, Callable, NoReturn, Optional
+from typing import Any, Callable, Optional
 
 from hiyobot.discord.types.interactions import (
     ApplicationCommandOptionType,
@@ -8,10 +8,14 @@ from hiyobot.handler.types import CORO
 
 
 class RegisterdInfo:
+    single_command: dict[str, CORO] = {}
     sub_command: dict[str, CORO] = {}
 
     def __init__(self, name: str) -> None:
         self.name = name
+
+    def add_command(self, func: CORO):
+        self.single_command[self.name] = func
 
     def add_sub_command(self, name: str, func: CORO):
         self.sub_command[name] = func
@@ -64,11 +68,13 @@ class RegisterCommand:
         description: str,
         type: ApplicationCommandType = 1,
     ) -> None:
+        self._is_sub_command_group = False
         self.name = name
         self.description = description
         self.type = type
         self.registerd_sub_command_groups: list["RegisterCommand"] = []
         self.registerd_sub_commands: list[CommandArgument] = []
+        self.command_options: list[CommandArgument] = []
 
         self.registerd_info = RegisterdInfo(self.name)
 
@@ -80,6 +86,10 @@ class RegisterCommand:
             "options": [],
         }
 
+        if options := self.command_options:
+            for option in options:
+                base["options"].append(option.to_dict())
+
         if sub_command_groups := self.registerd_sub_command_groups:
             for sub_command_group in sub_command_groups:
                 base["options"].append(sub_command_group.to_dict())
@@ -90,8 +100,15 @@ class RegisterCommand:
 
         return base
 
-    def command(self) -> NoReturn:
-        raise NotImplementedError
+    def command(
+        self, options: Optional[list[CommandArgument]]
+    ) -> Callable[[CORO], None]:
+        def decorator(f: CORO) -> None:
+            if options:
+                self.command_options.extend(options)
+            self.registerd_info.add_command(f)
+
+        return decorator
 
     def sub_command(
         self,
@@ -110,6 +127,9 @@ class RegisterCommand:
         return decorator
 
     def sub_command_group(self, *, name: str, description: str) -> "RegisterCommand":
+        if self._is_sub_command_group:
+            raise RuntimeError("Invaild")
         ins = self.__class__(name=name, description=description, type=2)
         self.registerd_sub_command_groups.append(ins)
+        ins._is_sub_command_group = True
         return ins

@@ -11,6 +11,7 @@ class BaseHTTP:
         self,
         method: Literal["GET", "POST", "DELETE", "PUT", "PATCH"],
         url: str,
+        return_method: Literal["json", "text", "read"] = "json",
         **kwargs: Any,
     ) -> Any:
         if not self.session:
@@ -18,23 +19,47 @@ class BaseHTTP:
         async with self.session.request(method, url, **kwargs) as r:
             if r.status == 204:
                 return {}
-            r.raise_for_status()
-            return await r.json()
+            return await getattr(r, return_method)()
 
-    async def get(self, path: str, **kwargs: Any) -> Any:
-        return await self.request("GET", path, **kwargs)
+    async def get(
+        self,
+        path: str,
+        return_method: Literal["json", "text", "read"] = "json",
+        **kwargs: Any,
+    ) -> Any:
+        return await self.request("GET", path, return_method, **kwargs)
 
-    async def post(self, path: str, **kwargs: Any) -> Any:
-        return await self.request("POST", path, **kwargs)
+    async def post(
+        self,
+        path: str,
+        return_method: Literal["json", "text", "read"] = "json",
+        **kwargs: Any,
+    ) -> Any:
+        return await self.request("POST", path, return_method, **kwargs)
 
-    async def delete(self, path: str, **kwargs: Any) -> Any:
-        return await self.request("DELETE", path, **kwargs)
+    async def delete(
+        self,
+        path: str,
+        return_method: Literal["json", "text", "read"] = "json",
+        **kwargs: Any,
+    ) -> Any:
+        return await self.request("DELETE", path, return_method, **kwargs)
 
-    async def put(self, path: str, **kwargs: Any) -> Any:
-        return await self.request("PUT", path, **kwargs)
+    async def put(
+        self,
+        path: str,
+        return_method: Literal["json", "text", "read"] = "json",
+        **kwargs: Any,
+    ) -> Any:
+        return await self.request("PUT", path, return_method, **kwargs)
 
-    async def patch(self, path: str, **kwargs: Any) -> Any:
-        return await self.request("PATCH", path, **kwargs)
+    async def patch(
+        self,
+        path: str,
+        return_method: Literal["json", "text", "read"] = "json",
+        **kwargs: Any,
+    ) -> Any:
+        return await self.request("PATCH", path, return_method, **kwargs)
 
     async def close(self) -> None:
         if self.session:
@@ -54,11 +79,14 @@ class DiscordBaseHTTP(BaseHTTP):
         self,
         method: Literal["GET", "POST", "DELETE", "PUT", "PATCH"],
         url: str,
+        return_method: Literal["json", "text", "read"] = "json",
         **kwargs: Any,
     ) -> Any:
         if not self.session:
             self.session = ClientSession(headers={"Authorization": f"Bot {self.token}"})
-        return await super().request(method, f"{self.FULL_URL}{url}", **kwargs)
+        return await super().request(
+            method, f"{self.FULL_URL}{url}", return_method, **kwargs
+        )
 
     async def channel_is_nsfw(self, channel_id: int) -> bool:
         res = await self.get(f"/channels/{channel_id}")

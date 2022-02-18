@@ -18,7 +18,7 @@ from hiyobot.discord.types.interactions import (
     ApplicationCommandInteractionData,
     ComponentInteractionData,
 )
-from hiyobot.handler.http import DiscordBaseHTTP
+from hiyobot.handler.http import BaseHTTP, DiscordBaseHTTP
 from hiyobot.handler.register import RegisterCommand, RegisterdInfo
 from hiyobot.handler.types import CORO
 
@@ -135,6 +135,7 @@ class HiyobotContext(SimpleNamespace):
     mintchoco: Mintchoco
     http: DiscordBaseHTTP
     handler: "Hiyobot"
+    request: BaseHTTP
 
 
 class HiyobotRequestContext(SimpleNamespace):
@@ -179,6 +180,7 @@ class Hiyobot:
         self.sanic.ctx.http = DiscordBaseHTTP(self.token)
         self.sanic.ctx.mintchoco = Mintchoco()
         self.sanic.ctx.handler = self
+        self.sanic.ctx.request = BaseHTTP()
 
     def command_register(self, info: RegisterCommand):
         self.commands.update({info.registerd_info.name: info.registerd_info})
@@ -221,7 +223,6 @@ class Hiyobot:
                 return await self.dispatch_application_command(request)
 
             if request.json["type"] == 3:
-
                 return await self.dispatch_message_component(request)
 
         raise Unauthorized("not_verified", 401)
@@ -232,18 +233,31 @@ class Hiyobot:
                 ApplicationCommandInteractionData, request.ctx.interaction.data
             )
 
-            # Handle Subcommand
             if interaction_data.get("type") == 1:
                 if interaction_data["name"] in self.commands:
                     command = self.commands[interaction_data["name"]]
                     if interaction_options := interaction_data.get("options"):
                         option = interaction_options[0]
-                        if option["name"] in command.sub_command:
-                            sub_command_func = command.sub_command[option["name"]]
-                            return await sub_command_func(
-                                request,
-                                *tuple(map(lambda x: x["value"], option["options"])),  # type: ignore
-                            )
+                        # Handle Subcommand
+                        if option["type"] == 1:
+                            if option["name"] in command.sub_command:
+                                sub_command_func = command.sub_command[option["name"]]
+                                return await sub_command_func(
+                                    request,
+                                    *tuple(map(lambda x: x["value"], option["options"])),  # type: ignore
+                                )
+                        # Handle Single Command
+                        else:
+                            if interaction_data["name"] in command.single_command:
+                                single_command_func = command.single_command[
+                                    interaction_data["name"]
+                                ]
+                                return await single_command_func(
+                                    request,
+                                    *tuple(
+                                        map(lambda x: x["value"], option["options"])  # type: ignore
+                                    ),
+                                )
 
             # TODO: Handle Subcommand Group
 
@@ -258,3 +272,5 @@ class Hiyobot:
                 await self.compoents[custom_id].execute(
                     interaction_data["custom_id"], request
                 )
+            else:
+                await request.ctx.response.send("만료된 상호작용이에요.", ephemeral=True)
