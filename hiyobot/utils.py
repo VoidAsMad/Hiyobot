@@ -16,7 +16,7 @@ async def is_nsfw(request: HiyobotRequest):
 
 def available_only_on_nsfw_channel(f: Any):
     async def inner(request: HiyobotRequest, *args: Any, **kwargs: Any):
-        if await is_nsfw(request):
+        if not await is_nsfw(request):
             return await request.ctx.response.send(
                 "연령 제한 채널 설정이 되어있지 않습니다. 연령 제한 채널을 설정해주세요.",
                 ephemeral=True,

@@ -128,7 +128,7 @@ async def neko_search(request: HiyobotRequest, tag: str):
             "해당 태그는 없어요! 태그는 ``/네코 도움말``을 통해 확인하실 수 있어요."
         )
     if tag in nsfw_tags:
-        if not is_nsfw(request):
+        if not await is_nsfw(request):
             return await request.ctx.response.send(
                 "해당 태그는 성인 태그인 것 같습니다. 연령 제한이 설정된 채널에서 사용해주세요."
             )
