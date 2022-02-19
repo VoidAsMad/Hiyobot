@@ -242,7 +242,7 @@ class Hiyobot:
                         if option["type"] == 1:
                             if option["name"] in command.sub_command:
                                 sub_command_func = command.sub_command[option["name"]]
-                                return await sub_command_func(
+                                await sub_command_func(
                                     request,
                                     *tuple(map(lambda x: x["value"], option["options"])),  # type: ignore
                                 )
@@ -252,7 +252,7 @@ class Hiyobot:
                                 single_command_func = command.single_command[
                                     interaction_data["name"]
                                 ]
-                                return await single_command_func(
+                                await single_command_func(
                                     request,
                                     *tuple(
                                         map(lambda x: x["value"], option["options"])  # type: ignore
