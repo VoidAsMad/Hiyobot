@@ -8,11 +8,10 @@ from hiyobot.handler.types import CORO
 
 
 class RegisterdInfo:
-    single_command: dict[str, CORO] = {}
-    sub_command: dict[str, CORO] = {}
-
     def __init__(self, name: str) -> None:
         self.name = name
+        self.single_command: dict[str, CORO] = {}
+        self.sub_command: dict[str, CORO] = {}
 
     def add_command(self, func: CORO):
         self.single_command[self.name] = func
