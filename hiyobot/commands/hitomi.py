@@ -66,6 +66,7 @@ async def hitomi_list(request: HiyobotRequest, number: int, ephemeral: bool = Fa
     await request.ctx.response.send(
         embed=embeds[0],
         component=pagenator,
+        ephemeral=ephemeral,
     )
 
 
@@ -108,7 +109,9 @@ async def hitomi_viewer(request: HiyobotRequest, number: int, ephemeral: bool = 
 
             pagenator = Pagenator(user_id, embeds)
             await request.ctx.response.follow_up_send(
-                embed=embeds[0], component=pagenator
+                embed=embeds[0],
+                component=pagenator,
+                ephemeral=ephemeral,
             )
         else:
             await request.ctx.response.follow_up_send(
@@ -157,6 +160,7 @@ async def hitomi_search(request: HiyobotRequest, query: str, ephemeral: bool = F
             return await request.ctx.response.send(
                 embed=embeds[0],
                 component=pagenator,
+                ephemeral=ephemeral,
             )
 
     await request.ctx.response.send("정보를 찾을수 없어요.", ephemeral=ephemeral)
