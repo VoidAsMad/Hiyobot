@@ -1,5 +1,4 @@
-from typing import Literal, get_args
-from hiyobot.discord.embeds import Embed
+from discord.embeds import Embed
 from hiyobot.handler.app import HiyobotRequest
 from hiyobot.handler.register import CommandArgument, RegisterCommand
 from hiyobot.utils import is_nsfw

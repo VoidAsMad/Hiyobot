@@ -1,7 +1,7 @@
 from os import urandom
 from typing import Any
 
-from hiyobot.discord.embeds import Embed
+from discord.embeds import Embed
 from hiyobot.handler.app import Component, HiyobotRequest
 
 

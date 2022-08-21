@@ -2,7 +2,7 @@ from typing import Any
 
 from mintchoco.model.info import Info
 
-from hiyobot.discord.embeds import Embed
+from discord.embeds import Embed
 from hiyobot.handler.app import HiyobotRequest
 
 

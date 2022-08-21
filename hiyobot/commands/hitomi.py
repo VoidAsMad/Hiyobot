@@ -1,4 +1,5 @@
-from hiyobot.discord.embeds import Embed
+from discord.embeds import Embed
+from sanic import json
 from hiyobot.handler.app import HiyobotRequest
 from hiyobot.handler.register import CommandArgument, RegisterCommand
 from hiyobot.pagenator import Pagenator
@@ -90,35 +91,35 @@ async def hitomi_list(request: HiyobotRequest, number: int, ephemeral: bool = Fa
 )
 @available_only_on_nsfw_channel
 async def hitomi_viewer(request: HiyobotRequest, number: int, ephemeral: bool = False):
-    async def coro():
-        images = await request.app.ctx.mintchoco.image(number)
-        user_id = int(request.json["member"]["user"]["id"])
-        if images:
-            page = 0
-            total = len(images.files)
-            embeds: list[Embed] = []
+    await request.respond(json({"type": 5}))
+    images = await request.app.ctx.mintchoco.image(number)
+    user_id = int(request.json["member"]["user"]["id"])
+    if images:
+        page = 0
+        total = len(images.files)
+        embeds: list[Embed] = []
 
-            for file in images.files:
-                page += 1
-                embed = Embed()
-                embed.set_image(
-                    url=f"{request.app.ctx.mintchoco.BASE_URL}/proxy/{file.url}"
-                )
-                embed.set_footer(text=f"{page}/{total}")
-                embeds.append(embed)
-
-            pagenator = Pagenator(user_id, embeds)
-            await request.ctx.response.follow_up_send(
-                embed=embeds[0],
-                component=pagenator,
-                ephemeral=ephemeral,
+        for file in images.files:
+            page += 1
+            embed = Embed()
+            embed.set_image(
+                url=f"{request.app.ctx.mintchoco.BASE_URL}/proxy/{file.url}"
             )
-        else:
-            await request.ctx.response.follow_up_send(
-                "정보를 찾을수 없어요.", ephemeral=ephemeral
-            )
+            embed.set_footer(text=f"{page}/{total}")
+            embeds.append(embed)
 
-    await request.ctx.response.wait(coro)
+        pagenator = Pagenator(user_id, embeds)
+        await request.ctx.response.follow_up_send(
+            embed=embeds[0],
+            component=pagenator,
+            ephemeral=ephemeral,
+        )
+    else:
+        await request.ctx.response.follow_up_send(
+            "정보를 찾을수 없어요.", ephemeral=ephemeral
+        )
+
+    
 
 
 @hitomi.sub_command(

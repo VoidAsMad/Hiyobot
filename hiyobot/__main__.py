@@ -3,10 +3,7 @@ from hiyobot.commands.anekos import anekos
 from hiyobot.commands.license import license
 from hiyobot.handler.app import Hiyobot
 
-bot = Hiyobot(
-    "client_public_key",
-    "bot_token",
-)
+bot = Hiyobot()
 bot.command_register(hitomi)
 bot.command_register(anekos)
 bot.command_register(license)

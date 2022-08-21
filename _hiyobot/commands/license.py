@@ -1,6 +1,7 @@
 from discord.embeds import Embed
-from hiyobot.handler.app import HiyobotRequest
-from hiyobot.handler.register import RegisterCommand
+
+from _hiyobot.registry.command import RegisterCommand
+from _hiyobot.handler.app import Context
 
 embed = Embed(
     title="OSS Notice",
@@ -32,10 +33,10 @@ embed.add_field(
 )
 
 license = RegisterCommand(
-    name="license", description="Licenses for OSS used in Hiyobot"
+    name="licence", description="Licenses for OSS used in Hiyobot"
 )
 
 
-@license.command(options=None)
-async def show_license(request: HiyobotRequest):
-    return await request.ctx.response.send(embed=embed)
+@license.command()
+async def show_license(context: Context):
+    context.singleton.webhook_context.create_interaction_response(context.interaction.id, context.interaction.token, session=)

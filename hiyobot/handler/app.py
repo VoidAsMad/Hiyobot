@@ -12,13 +12,13 @@ from sanic.app import Sanic
 from sanic.exceptions import Unauthorized
 from sanic.response import json
 
-from hiyobot.discord.embeds import Embed
-from hiyobot.discord.interactions import Interaction
-from hiyobot.discord.types.interactions import (
+from discord.embeds import Embed
+from discord.types.interactions import (
     ApplicationCommandInteractionData,
-    ComponentInteractionData,
+    MessageComponentInteractionData,
 )
 from hiyobot.handler.http import BaseHTTP, DiscordBaseHTTP
+from hiyobot.handler.interaction import Interaction
 from hiyobot.handler.register import RegisterCommand, RegisterdInfo
 from hiyobot.handler.types import CORO
 
@@ -262,10 +262,10 @@ class Hiyobot:
             # TODO: Handle Subcommand Group
 
     async def dispatch_message_component(self, request: HiyobotRequest):
-        request.ctx.interaction = Interaction(request.json)
+        request.ctx.interaction = Interaction(data=request.json)
         if request.ctx.interaction.data:
             interaction_data = cast(
-                ComponentInteractionData, request.ctx.interaction.data
+                MessageComponentInteractionData, request.ctx.interaction.data
             )
             custom_id = interaction_data["custom_id"]
             if custom_id in self.components:
