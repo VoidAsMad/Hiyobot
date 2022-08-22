@@ -78,7 +78,7 @@ async def hitomi_list(
 
     paginator = Paginator(interaction.user.id, embeds)
 
-    await interaction.response.send_message(
+    return await interaction.response.send_message(
         embed=embeds[0],
         view=paginator,
         ephemeral=ephemeral,
@@ -93,6 +93,8 @@ async def hitomi_list(
 async def hitomi_viewer(
     interaction: Interaction, number: int, ephemeral: bool = False
 ) -> None:
+    await interaction.response.defer()
+
     images = await Hiyobot.mintchoco.image(number)
 
     if not images:
