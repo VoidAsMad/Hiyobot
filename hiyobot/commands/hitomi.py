@@ -44,7 +44,7 @@ def make_embed_with_info(info: Info):
     return embed
 
 
-hitomi = app_commands.Group(name="히토미", description="히토미 관련 명령어입니다.")
+hitomi = app_commands.Group(name="히토미", description="히토미 관련 명령어입니다.", nsfw=True)
 
 
 @hitomi.command(
