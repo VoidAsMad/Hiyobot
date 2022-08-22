@@ -30,7 +30,6 @@ class Hiyobot(Client):
             await self.tree.sync()
         else:
             await self.tree.sync(guild=Object(self.config.TEST_GUILD_ID))
-        self.tree.clear_commands(guild=None)
 
     def run(self, *args: Any, **kwargs: Any) -> None:
         """
