@@ -71,6 +71,7 @@ async def hitomi_info(
 async def hitomi_list(
     interaction: Interaction, number: int, ephemeral: bool = False
 ) -> None:
+    await interaction.response.defer()
     infos = await Hiyobot.mintchoco.list(number)
     assert infos
 
@@ -78,7 +79,7 @@ async def hitomi_list(
 
     paginator = Paginator(interaction.user.id, embeds)
 
-    return await interaction.response.send_message(
+    return await interaction.followup.send(
         embed=embeds[0],
         view=paginator,
         ephemeral=ephemeral,
@@ -98,9 +99,7 @@ async def hitomi_viewer(
     images = await Hiyobot.mintchoco.image(number)
 
     if not images:
-        return await interaction.response.send_message(
-            "정보를 찾을수 없어요.", ephemeral=ephemeral
-        )
+        return await interaction.followup.send("정보를 찾을수 없어요.", ephemeral=ephemeral)
 
     page = 0
     total = len(images.files)
@@ -115,7 +114,7 @@ async def hitomi_viewer(
 
     paginator = Paginator(interaction.user.id, embeds)
 
-    return await interaction.response.send_message(
+    return await interaction.followup.send(
         embed=embeds[0],
         view=paginator,
         ephemeral=ephemeral,
@@ -134,6 +133,7 @@ async def hitomi_viewer(
 async def hitomi_search(
     interaction: Interaction, query: str, page: int = 1, ephemeral: bool = False
 ) -> None:
+    await interaction.response.defer()
     querys = query.split(" ")
     search = await Hiyobot.mintchoco.search(querys, page)
     if search:
@@ -142,10 +142,10 @@ async def hitomi_search(
 
             paginator = Paginator(interaction.user.id, embeds)
 
-            return await interaction.response.send_message(
+            return await interaction.followup.send(
                 embed=embeds[0],
                 view=paginator,
                 ephemeral=ephemeral,
             )
 
-    await interaction.response.send_message("정보를 찾을수 없어요.", ephemeral=ephemeral)
+    await interaction.followup.send("정보를 찾을수 없어요.", ephemeral=ephemeral)
