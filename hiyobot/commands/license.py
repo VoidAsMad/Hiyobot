@@ -7,7 +7,7 @@ embed = Embed(
 )
 embed.add_field(
     name="discord.py",
-    value="https://github.com/Rapptz/discord.py\nCopyright (c) Copyright (c) 2015-present Rapptz\n[MIT License](https://github.com/Rapptz/discord.py/blob/master/LICENSE)",
+    value="https://github.com/Rapptz/discord.py\nCopyright (c) 2015-present Rapptz\n[MIT License](https://github.com/Rapptz/discord.py/blob/master/LICENSE)",
 )
 embed.add_field(
     name="Mintchoco",
