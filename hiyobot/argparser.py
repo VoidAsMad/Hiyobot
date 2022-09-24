@@ -19,7 +19,7 @@ def parse_args(argv: list[str]) -> Namespace:
     config.add_argument(
         "--test-guild-id",
         type=int,
-        default=725643500171034691,
+        default=1017672162942931015,
         help="테스트 할 길드 ID입니다 (기본값: 725643500171034691)",
     )
 

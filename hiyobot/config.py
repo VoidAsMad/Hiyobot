@@ -47,7 +47,7 @@ class HiyobotConfig(dict[str, Any]):
             {
                 "USE_ENV": False,
                 "PRODUCTION": False,
-                "TEST_GUILD_ID": 725643500171034691,
+                "TEST_GUILD_ID": 1017672162942931015,
                 "DB_URL": "",
                 "CONFIG": "",
                 "TOKEN": "",

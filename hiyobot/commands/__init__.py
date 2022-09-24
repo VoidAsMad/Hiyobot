@@ -11,6 +11,7 @@ from discord.app_commands import Command, Group
 from hiyobot.commands.hitomi import hitomi as hitomi
 from hiyobot.commands.nekos import neko as neko
 from hiyobot.commands.license import *
+from hiyobot.commands.pixiv import pixiv as pixiv
 
 # 임포트한것중에 필요한것만 필터링
 commands: list[Command[Any, Any, Any] | Group] = [
