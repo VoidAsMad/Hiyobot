@@ -8,20 +8,13 @@ from discord import PartialMessageable
 from bs4 import BeautifulSoup
 
 from hiyobot.client import Hiyobot
-from pypixiv.client import PixivClient
 from pypixiv.abc import BasePixiv
 
-client = PixivClient()
+
 proxy_url = "https://api.saebasol.org/api/proxy/"
 
 
-pixiv = app_commands.Group(name="픽시브", description="픽시브 일러스트를 가져옵니다.")
-
-
-def is_nsfw(channel: Optional[Any]):
-    if channel and not isinstance(channel, PartialMessageable):
-        return channel.is_nsfw()
-    return False
+pixiv = app_commands.Group(name="픽시브", description="픽시브 일러스트를 가져옵니다.", nsfw=True)
 
 
 def recompile_date(date: str):
@@ -67,12 +60,8 @@ def pixiv_make_illust_embed(data: BasePixiv) -> Embed:
 async def pixiv_view(
     interaction: Interaction, id: int, ephemeral: bool = False
     ) -> None:
-    if not is_nsfw(interaction.channel):
-        return await interaction.response.send_message(
-            "이 명령어는 연령 제한이 설정된 채널에서 사용해주세요."
-        )
     return await interaction.response.send_message(
-        embed=pixiv_make_illust_embed(await client.illustinfo(id)), 
+        embed=pixiv_make_illust_embed(await Hiyobot.pypixiv.illustinfo(id)), 
         ephemeral=ephemeral
         )
 
@@ -85,11 +74,7 @@ async def pixiv_view(
 async def pixiv_info(
     interaction: Interaction, id: int, ephemeral: bool = False
     ) -> None:
-    if not is_nsfw(interaction.channel):
-        return await interaction.response.send_message(
-            "이 명령어는 연령 제한이 설정된 채널에서 사용해주세요."
-        )
     return await interaction.response.send_message(
-        embed=pixiv_get_illustinfo(await client.illustinfo(id)), 
+        embed=pixiv_get_illustinfo(await Hiyobot.pypixiv.illustinfo(id)), 
         ephemeral=ephemeral
         )
