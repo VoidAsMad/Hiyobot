@@ -27,7 +27,6 @@ class Hiyobot(Client):
         Hiyobot.request = Request()
         Hiyobot.pypixiv = PixivClient()
 
-
     async def setup_hook(self):
         if self.config.PRODUCTION:
             await self.tree.sync()
