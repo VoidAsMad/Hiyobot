@@ -16,6 +16,7 @@ from discord.flags import Intents
 class Hiyobot(Client):
     mintchoco: Mintchoco
     request: Request
+    pypixiv: PixivClient
 
     def __init__(
         self, config: HiyobotConfig, intents: Intents, *args: Any, **kwargs: Any
