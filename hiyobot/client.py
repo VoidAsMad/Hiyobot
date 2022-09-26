@@ -9,6 +9,7 @@ from discord.app_commands.tree import CommandTree
 from mintchoco.client import Mintchoco
 from hiyobot.config import HiyobotConfig
 from hiyobot.request import Request
+from pypixiv.client import PixivClient
 from discord.flags import Intents
 
 
@@ -24,6 +25,8 @@ class Hiyobot(Client):
         self.config = config
         Hiyobot.mintchoco = Mintchoco()
         Hiyobot.request = Request()
+        Hiyobot.pypixiv = PixivClient()
+
 
     async def setup_hook(self):
         if self.config.PRODUCTION:
