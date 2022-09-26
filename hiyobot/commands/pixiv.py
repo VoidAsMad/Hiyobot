@@ -31,8 +31,8 @@ def pixiv_get_illustinfo(data: BasePixiv) -> Embed:
     data = data.body
     embed = Embed(
         title=data.title,
-        url = f"https://www.pixiv.net/artworks/{data.id}",
-        color=0x008AE6
+        url=f"https://www.pixiv.net/artworks/{data.id}",
+        color=0x008AE6,
     )
     embed.add_field(name="설명", value=html2text(data.description), inline=True)
     embed.add_field(name="작가", value=data.userAccount, inline=True)
@@ -59,11 +59,11 @@ def pixiv_make_illust_embed(data: BasePixiv) -> Embed:
 @app_commands.describe(id="정보를 가져올 작품의 아이디입니다.", ephemeral="나에게만 보일지 선택하는 여부입니다.")
 async def pixiv_view(
     interaction: Interaction, id: int, ephemeral: bool = False
-    ) -> None:
+) -> None:
     return await interaction.response.send_message(
-        embed=pixiv_make_illust_embed(await Hiyobot.pypixiv.illustinfo(id)), 
-        ephemeral=ephemeral
-        )
+        embed=pixiv_make_illust_embed(await Hiyobot.pypixiv.illustinfo(id)),
+        ephemeral=ephemeral,
+    )
 
 
 @pixiv.command(
@@ -73,8 +73,8 @@ async def pixiv_view(
 @app_commands.describe(id="정보를 가져올 작품의 아이디입니다.", ephemeral="나에게만 보일지 선택하는 여부입니다.")
 async def pixiv_info(
     interaction: Interaction, id: int, ephemeral: bool = False
-    ) -> None:
+) -> None:
     return await interaction.response.send_message(
-        embed=pixiv_get_illustinfo(await Hiyobot.pypixiv.illustinfo(id)), 
-        ephemeral=ephemeral
-        )
+        embed=pixiv_get_illustinfo(await Hiyobot.pypixiv.illustinfo(id)),
+        ephemeral=ephemeral,
+    )
