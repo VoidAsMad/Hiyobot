@@ -2,14 +2,11 @@ from typing import Any, Optional
 from discord.embeds import Embed
 
 from discord import Interaction, app_commands
-from random import choice
 from datetime import datetime
-from discord import PartialMessageable
-from bs4 import BeautifulSoup
 
 from hiyobot.client import Hiyobot
-from pypixiv.abc import BasePixiv
-
+from pypixiv.illust.body import IllustBody
+from bs4 import BeautifulSoup
 
 proxy_url = "https://api.saebasol.org/api/proxy/"
 
@@ -22,12 +19,12 @@ def recompile_date(date: str):
 
 
 def html2text(html: str):
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(html, "lxml")
     text_parts = soup.findAll(text=True)
     return "".join(text_parts)
 
 
-def pixiv_get_illustinfo(data: BasePixiv) -> Embed:
+def pixiv_get_illustinfo(data: IllustBody) -> Embed:
     embed = Embed(
         title=data.title,
         url=f"https://www.pixiv.net/artworks/{data.id}",
@@ -42,7 +39,7 @@ def pixiv_get_illustinfo(data: BasePixiv) -> Embed:
     return embed
 
 
-def pixiv_make_illust_embed(data: BasePixiv) -> Embed:
+def pixiv_make_illust_embed(data: IllustBody) -> Embed:
     embed = Embed(description=data.id, color=0x008AE6)
     embed.set_author(name=data.title, url=f"https://www.pixiv.net/artworks/{data.id}")
     embed.set_image(url=proxy_url + data.urls.original)
