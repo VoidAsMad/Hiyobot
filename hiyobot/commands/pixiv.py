@@ -28,7 +28,6 @@ def html2text(html: str):
 
 
 def pixiv_get_illustinfo(data: BasePixiv) -> Embed:
-    data = data.body
     embed = Embed(
         title=data.title,
         url=f"https://www.pixiv.net/artworks/{data.id}",
@@ -44,7 +43,6 @@ def pixiv_get_illustinfo(data: BasePixiv) -> Embed:
 
 
 def pixiv_make_illust_embed(data: BasePixiv) -> Embed:
-    data = data.body
     embed = Embed(description=data.id, color=0x008AE6)
     embed.set_author(name=data.title, url=f"https://www.pixiv.net/artworks/{data.id}")
     embed.set_image(url=proxy_url + data.urls.original)
@@ -60,8 +58,9 @@ def pixiv_make_illust_embed(data: BasePixiv) -> Embed:
 async def pixiv_view(
     interaction: Interaction, id: int, ephemeral: bool = False
 ) -> None:
+    data = await Hiyobot.pypixiv.illustinfo(id)
     return await interaction.response.send_message(
-        embed=pixiv_make_illust_embed(await Hiyobot.pypixiv.illustinfo(id)),
+        embed=pixiv_make_illust_embed(data.body),
         ephemeral=ephemeral,
     )
 
@@ -74,7 +73,8 @@ async def pixiv_view(
 async def pixiv_info(
     interaction: Interaction, id: int, ephemeral: bool = False
 ) -> None:
+    data = await Hiyobot.pypixiv.illustinfo(id)
     return await interaction.response.send_message(
-        embed=pixiv_get_illustinfo(await Hiyobot.pypixiv.illustinfo(id)),
+        embed=pixiv_get_illustinfo(data.body),
         ephemeral=ephemeral,
     )
